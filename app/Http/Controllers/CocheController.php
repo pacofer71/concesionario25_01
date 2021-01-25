@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Coche;
+use App\Models\Marca;
 use Illuminate\Http\Request;
 
 class CocheController extends Controller
@@ -26,7 +27,8 @@ class CocheController extends Controller
      */
     public function create()
     {
-        //
+        $marcas=Marca::orderBy('nombre')->get();
+        return view('coches.create', compact('marcas'));
     }
 
     /**
@@ -46,9 +48,9 @@ class CocheController extends Controller
      * @param  \App\Models\Coche  $coche
      * @return \Illuminate\Http\Response
      */
-    public function show(Coche $coche)
+    public function show(Coche $coch)
     {
-        //
+        return view('coches.show', compact('coch'));
     }
 
     /**
@@ -80,8 +82,19 @@ class CocheController extends Controller
      * @param  \App\Models\Coche  $coche
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Coche $coche)
+    public function destroy(Coche $coch)
     {
-        //
+        $foto=basename($coch->foto);
+        if($foto!='default.png'){
+            unlink($coch->foto);
+        }
+        $coch->delete();
+        return redirect()->route('coches.index')->with("mensaje", "¡¡ Coche Borrado !!");
+    }
+    //método para ver los coches de una marca determinada
+    public function cochesxmarca(Marca $marca){
+        $coches=Coche::where('marca_id', '=', $marca->id)->orderBy('modelo')->paginate(3);
+        return view('coches.cochesxmarca', compact('coches'));
+
     }
 }

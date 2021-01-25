@@ -20,4 +20,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', '\App\Http\Controllers\ConcesionarioController@inicio')->name('inicio');
 
 Route::resource('marcas', '\App\Http\Controllers\MarcaController');
+
+Route::get('coches/{marca}/cochesxmarca', '\App\Http\Controllers\CocheController@cochesxmarca')->name('coches.cochesxmarca');
+//Route::get('coches1/{marca}', '\App\Http\Controllers\CocheController@cochesxmarca')->name('coches.cochesxmarca');
+
 Route::resource('coches', '\App\Http\Controllers\CocheController');

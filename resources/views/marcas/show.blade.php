@@ -17,6 +17,8 @@ Detalle Marca ({{$marca->id}})
       <p class="card-text"><b>Registro creado: </b>{{$marca->created_at}}</p>
       <p class="card-text"><b>Registro actualizado: </b>{{$marca->updated_at}}</p>
       <a href="{{route('marcas.index')}}" class="btn btn-primary mt-2"><i class="fa fa-house-user"></i> Inicio</a>
+      <a href="{{route('coches.cochesxmarca', $marca)}}" class="btn btn-secondary mt-2">
+        <i class="fa fa-car"></i> Ver coches de esta marca</a>
     </div>
   </div>
 @endsection
