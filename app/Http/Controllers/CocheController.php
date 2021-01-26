@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Coche;
 use App\Models\Marca;
 use Illuminate\Http\Request;
+use App\Http\Requests\CocheRequest;
 
 class CocheController extends Controller
 {
@@ -37,9 +38,26 @@ class CocheController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CocheRequest $request)
     {
-        //
+        $datos=$request->validated();
+        $coche= new Coche();
+        $coche->modelo=$datos['modelo'];
+        $coche->color=$datos['color'];
+        $coche->kilometros=$datos['kilometros'];
+
+        if(isset($datos['nombre_foto'])){
+            $coche->foto=$datos['nombre_foto'];
+        }
+
+        if(isset($datos['marca_id'])){
+            $coche->marca_id=$datos['marca_id'];
+        }
+
+        //Guardamos el coche en la BBDD
+        $coche->save();
+        return redirect()->route('coches.index')->with('mensaje', 'Coche Guardado');
+
     }
 
     /**
@@ -59,9 +77,10 @@ class CocheController extends Controller
      * @param  \App\Models\Coche  $coche
      * @return \Illuminate\Http\Response
      */
-    public function edit(Coche $coche)
+    public function edit(Coche $coch)
     {
-        //
+        $marcas=Marca::orderBy('nombre')->get();
+        return view('coches.edit', compact('coch', 'marcas'));
     }
 
     /**
@@ -71,9 +90,23 @@ class CocheController extends Controller
      * @param  \App\Models\Coche  $coche
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Coche $coche)
+    public function update(CocheRequest $request, Coche $coch)
     {
-        //
+        $datos=$request->validated();
+        $coch->modelo=$datos['modelo'];
+        $coch->color=$datos['color'];
+        $coch->kilometros=$datos['kilometros'];
+        $coch->marca_id=$datos['marca_id'];
+
+        if(isset($datos['nombre_foto'])){
+            if(basename($coch->foto)!='default.png') unlink($coch->foto);
+            $coch->foto=$datos['nombre_foto'];
+        }
+
+        $coch->update();
+        return redirect()->route('coches.index')->with('mensaje', 'Coche Actualizado');
+
+
     }
 
     /**
